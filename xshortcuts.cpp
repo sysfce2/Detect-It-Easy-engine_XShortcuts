@@ -27,23 +27,23 @@ XShortcuts::XShortcuts(QObject *pParent) : QObject(pParent)
 
 XShortcuts::~XShortcuts()
 {
-    qint32 nNumberOfCopyActions = m_listCopyActions.count();
+    // qint32 nNumberOfCopyActions = m_listCopyActions.count();
 
-    for (qint32 i = 0; i < nNumberOfCopyActions; i++) {
-        m_listCopyActions.at(i)->deleteLater();
-    }
+    // for (qint32 i = 0; i < nNumberOfCopyActions; i++) {
+    //     m_listCopyActions.at(i)->deleteLater();
+    // }
 
-    qint32 nNumberOfActions = m_listActions.count();
+    // qint32 nNumberOfActions = m_listActions.count();
 
-    for (qint32 i = 0; i < nNumberOfActions; i++) {
-        m_listActions.at(i)->deleteLater();
-    }
+    // for (qint32 i = 0; i < nNumberOfActions; i++) {
+    //     m_listActions.at(i)->deleteLater();
+    // }
 
-    qint32 nNumberOfMenus = m_listMenus.count();
+    // qint32 nNumberOfMenus = m_listMenus.count();
 
-    for (qint32 i = 0; i < nNumberOfMenus; i++) {
-        m_listMenus.at(i)->deleteLater();
-    }
+    // for (qint32 i = 0; i < nNumberOfMenus; i++) {
+    //     m_listMenus.at(i)->deleteLater();
+    // }
 }
 
 void XShortcuts::setName(const QString &sValue)
@@ -1098,9 +1098,9 @@ void XShortcuts::adjustRowCopyMenu(QMenu *pParentMenu, QMenu *pMenu, QAbstractIt
 {
     qint32 nNumberOfActions = m_listCopyActions.count();
 
-    for (qint32 i = 0; i < nNumberOfActions; i++) {
-        m_listCopyActions.at(i)->deleteLater();
-    }
+    // for (qint32 i = 0; i < nNumberOfActions; i++) {
+    //     m_listCopyActions.at(i)->deleteLater();
+    // }
 
     m_listCopyActions.clear();
 
