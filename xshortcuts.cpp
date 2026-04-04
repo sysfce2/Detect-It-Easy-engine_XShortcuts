@@ -51,13 +51,13 @@ void XShortcuts::setName(const QString &sValue)
     this->m_sName = sValue;
 
 #ifdef Q_OS_WIN
-    m_sName += "win.ini";
+    m_sName += ".win.ini";
 #endif
 #ifdef Q_OS_LINUX
-    m_sName += "linux.ini";
+    m_sName += ".linux.ini";
 #endif
 #ifdef Q_OS_MACOS
-    m_sName += "macos.ini";
+    m_sName += ".macos.ini";
 #endif
 }
 
