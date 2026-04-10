@@ -665,6 +665,9 @@ public slots:
     void copyRecord();
 
 private:
+    QSettings *_openSettings() const;
+    qint32 _findRecordIndex(quint64 nId) const;
+
     bool m_bIsNative;
     QString m_sApplicationDataPath;
     QString m_sName;

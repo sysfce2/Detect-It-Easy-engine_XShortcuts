@@ -27,23 +27,6 @@ XShortcuts::XShortcuts(QObject *pParent) : QObject(pParent)
 
 XShortcuts::~XShortcuts()
 {
-    // qint32 nNumberOfCopyActions = m_listCopyActions.count();
-
-    // for (qint32 i = 0; i < nNumberOfCopyActions; i++) {
-    //     m_listCopyActions.at(i)->deleteLater();
-    // }
-
-    // qint32 nNumberOfActions = m_listActions.count();
-
-    // for (qint32 i = 0; i < nNumberOfActions; i++) {
-    //     m_listActions.at(i)->deleteLater();
-    // }
-
-    // qint32 nNumberOfMenus = m_listMenus.count();
-
-    // for (qint32 i = 0; i < nNumberOfMenus; i++) {
-    //     m_listMenus.at(i)->deleteLater();
-    // }
 }
 
 void XShortcuts::setName(const QString &sValue)
@@ -66,7 +49,7 @@ void XShortcuts::setNative(bool bValue, const QString &sApplicationDataPath)
     m_bIsNative = bValue;
     m_sApplicationDataPath = sApplicationDataPath;
 
-    if (m_sApplicationDataPath == "") {
+    if (m_sApplicationDataPath.isEmpty()) {
         m_sApplicationDataPath = qApp->applicationDirPath();
     }
 }
@@ -301,15 +284,30 @@ QList<XShortcuts::RECORD> XShortcuts::getRecords()
     return m_listRecords;
 }
 
+QSettings *XShortcuts::_openSettings() const
+{
+    if (m_bIsNative) {
+        return new QSettings;
+    } else if (!m_sName.isEmpty()) {
+        return new QSettings(m_sApplicationDataPath + QDir::separator() + m_sName, QSettings::IniFormat);  // TODO more options
+    }
+    return nullptr;
+}
+
+qint32 XShortcuts::_findRecordIndex(quint64 nId) const
+{
+    const qint32 nCount = m_listRecords.count();
+    for (qint32 i = 0; i < nCount; i++) {
+        if (m_listRecords.at(i).nId == nId) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void XShortcuts::load()
 {
-    QSettings *pSettings = nullptr;
-
-    if (m_bIsNative) {
-        pSettings = new QSettings;
-    } else if (m_sName != "") {
-        pSettings = new QSettings(m_sApplicationDataPath + QDir::separator() + QString("%1").arg(m_sName), QSettings::IniFormat);  // TODO more options
-    }
+    QSettings *pSettings = _openSettings();
 
 #ifdef QT_DEBUG
     if (pSettings) {
@@ -328,22 +326,14 @@ void XShortcuts::load()
 
             setShortcut(nId, QKeySequence::fromString(pSettings->value(sString, ksDefault).toString()));
         }
-    }
 
-    if (pSettings) {
         delete pSettings;
     }
 }
 
 void XShortcuts::save()
 {
-    QSettings *pSettings = nullptr;
-
-    if (m_bIsNative) {
-        pSettings = new QSettings;
-    } else if (m_sName != "") {
-        pSettings = new QSettings(m_sApplicationDataPath + QDir::separator() + QString("%1").arg(m_sName), QSettings::IniFormat);  // TODO more options
-    }
+    QSettings *pSettings = _openSettings();
 
 #ifdef QT_DEBUG
     if (pSettings) {
@@ -361,9 +351,7 @@ void XShortcuts::save()
 
             pSettings->setValue(sString, m_listRecords.at(i).keySequence.toString());
         }
-    }
 
-    if (pSettings) {
         delete pSettings;
     }
 }
@@ -377,47 +365,23 @@ QKeySequence XShortcuts::getShortcut(quint64 nId)
     }
 #endif
 
-    QKeySequence result;
-
-    qint32 nNumberOfRecord = m_listRecords.count();
-
-    for (qint32 i = 0; i < nNumberOfRecord; i++) {
-        if (m_listRecords.at(i).nId == nId) {
-            result = m_listRecords.at(i).keySequence;
-            break;
-        }
+    qint32 nIndex = _findRecordIndex(nId);
+    if (nIndex != -1) {
+        return m_listRecords.at(nIndex).keySequence;
     }
-
-    return result;
+    return QKeySequence();
 }
 
 bool XShortcuts::isIdPresent(quint64 nId)
 {
-    bool bResult = false;
-
-    qint32 nNumberOfRecord = m_listRecords.count();
-
-    for (qint32 i = 0; i < nNumberOfRecord; i++) {
-        if (m_listRecords.at(i).nId == nId) {
-            bResult = true;
-            break;
-        }
-    }
-
-    return bResult;
+    return _findRecordIndex(nId) != -1;
 }
 
 void XShortcuts::setShortcut(quint64 nId, QKeySequence keySequence)
 {
-    if (isIdPresent(nId)) {
-        qint32 nNumberOfRecord = m_listRecords.count();
-
-        for (qint32 i = 0; i < nNumberOfRecord; i++) {
-            if (m_listRecords.at(i).nId == nId) {
-                m_listRecords[i].keySequence = keySequence;
-                break;
-            }
-        }
+    qint32 nIndex = _findRecordIndex(nId);
+    if (nIndex != -1) {
+        m_listRecords[nIndex].keySequence = keySequence;
     } else {
         RECORD record = {};
         record.nId = nId;
@@ -686,8 +650,8 @@ QKeySequence XShortcuts::getDefault(quint64 nId)
     } else if (groupId == GROUPID_SHOWIN) {
     } else if (groupId == GROUPID_BREAKPOINT) {
     } else if (groupId == GROUPID_SCAN) {
-        if (nId == X_ID_SCAN_EDITOR_FIND_STRING) ksResult = ksResult = QKeySequence::Find;
-        else if (nId == X_ID_SCAN_EDITOR_FIND_NEXT) ksResult = ksResult = QKeySequence::FindNext;
+        if (nId == X_ID_SCAN_EDITOR_FIND_STRING) ksResult = QKeySequence::Find;
+        else if (nId == X_ID_SCAN_EDITOR_FIND_NEXT) ksResult = QKeySequence::FindNext;
     }
 
     return ksResult;
@@ -695,7 +659,7 @@ QKeySequence XShortcuts::getDefault(quint64 nId)
 
 QString XShortcuts::groupIdToString(GROUPID groupId)
 {
-    QString sResult = "";
+    QString sResult;
 
     if (groupId == GROUPID_ACTION) sResult = tr("Action");
     else if (groupId == GROUPID_FILE) sResult = tr("File");
@@ -1043,7 +1007,7 @@ QString XShortcuts::baseIdToSettingsString(BASEID baseId)
 
 QString XShortcuts::groupIdToSettingsString(GROUPID groupId)
 {
-    QString sResult = "";
+    QString sResult;
 
     if (groupId == GROUPID_ACTION) sResult = QString("Action");
     else if (groupId == GROUPID_FILE) sResult = QString("File");
@@ -1096,12 +1060,6 @@ QString XShortcuts::groupIdToSettingsString(GROUPID groupId)
 
 void XShortcuts::adjustRowCopyMenu(QMenu *pParentMenu, QMenu *pMenu, QAbstractItemView *pTableView)
 {
-    qint32 nNumberOfActions = m_listCopyActions.count();
-
-    // for (qint32 i = 0; i < nNumberOfActions; i++) {
-    //     m_listCopyActions.at(i)->deleteLater();
-    // }
-
     m_listCopyActions.clear();
 
     adjustMenu(pParentMenu, pMenu, GROUPID_COPY);
@@ -1129,12 +1087,9 @@ void XShortcuts::adjustRowCopyMenu(QMenu *pParentMenu, QMenu *pMenu, QAbstractIt
             QString sRecord = listRecords.at(i);
             QString sTitle = listTitles.at(i);
 
-            if (sTitle != "") {
-                QString sString = sTitle;
-
-                // QAction *pActionRecord = new QAction(sString, pParent);
+            if (!sTitle.isEmpty()) {
                 QAction *pActionRecord = new QAction(pParentMenu);
-                XOptions::adjustAction(pMenu, pActionRecord, sString, this, SLOT(copyRecord()), XOptions::ICONTYPE_COPY);
+                XOptions::adjustAction(pMenu, pActionRecord, sTitle, this, SLOT(copyRecord()), XOptions::ICONTYPE_COPY);
                 pActionRecord->setProperty("VALUE", sRecord);
 
                 m_listCopyActions.append(pActionRecord);
@@ -1146,7 +1101,7 @@ void XShortcuts::adjustRowCopyMenu(QMenu *pParentMenu, QMenu *pMenu, QAbstractIt
         for (qint32 i = 0; i < nNumberOfSelected; i++) {
             QString sRecord = listRecords.at(i);
 
-            if (sRecord != "") {
+            if (!sRecord.isEmpty()) {
                 // QAction *pActionRecord = new QAction(sRecord, pParent);
                 QAction *pActionRecord = new QAction(pParentMenu);
                 XOptions::adjustAction(pMenu, pActionRecord, sRecord, this, SLOT(copyRecord()), XOptions::ICONTYPE_COPY);
@@ -1404,7 +1359,7 @@ void XShortcuts::adjustContextMenu(QMenu *pMenu, const QList<MENUITEM> *plistMen
     qint32 nNumberOfRecords = plistMenuItems->count();
 
     for (qint32 j = 0; j < nNumberOfRecords; j++) {
-        MENUITEM record = plistMenuItems->at(j);
+        const MENUITEM &record = plistMenuItems->at(j);
 
         QMenu *pCurrentMenu = mapMenus.value(0);
 
@@ -1464,11 +1419,9 @@ void XShortcuts::adjustContextMenu(QMenu *pMenu, const QList<MENUITEM> *plistMen
                     QString sRecord = listRecords.at(i);
                     QString sTitle = listTitles.at(i);
 
-                    if (sTitle != "") {
-                        QString sString = sTitle;
-
+                    if (!sTitle.isEmpty()) {
                         QAction *pActionRecord = new QAction(pMenu);
-                        XOptions::adjustAction(pMenuCopy, pActionRecord, sString, this, SLOT(copyRecord()), XOptions::ICONTYPE_COPY);
+                        XOptions::adjustAction(pMenuCopy, pActionRecord, sTitle, this, SLOT(copyRecord()), XOptions::ICONTYPE_COPY);
                         pActionRecord->setProperty("VALUE", sRecord);
                     }
                 }
@@ -1478,7 +1431,7 @@ void XShortcuts::adjustContextMenu(QMenu *pMenu, const QList<MENUITEM> *plistMen
                 for (qint32 i = 0; i < nNumberOfSelected; i++) {
                     QString sRecord = listRecords.at(i);
 
-                    if (sRecord != "") {
+                    if (!sRecord.isEmpty()) {
                         QAction *pActionRecord = new QAction(pMenu);
 
                         XOptions::adjustAction(pMenuCopy, pActionRecord, sRecord, this, SLOT(copyRecord()), XOptions::ICONTYPE_COPY);
@@ -1529,7 +1482,7 @@ void XShortcuts::registerShortcuts(QList<SHORTCUTITEM> *pListShortcutItems, bool
             }
         } else {
             delete pListShortcutItems->at(i).pShortCut;
-            (*pListShortcutItems)[i].pShortCut = 0;
+            (*pListShortcutItems)[i].pShortCut = nullptr;
         }
     }
 }
