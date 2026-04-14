@@ -54,6 +54,11 @@ void XShortcuts::setNative(bool bValue, const QString &sApplicationDataPath)
     }
 }
 
+bool XShortcuts::isNative() const
+{
+    return m_bIsNative;
+}
+
 void XShortcuts::addGroup(GROUPID groupId)
 {
     if (groupId == GROUPID_FILE) {

@@ -597,6 +597,7 @@ public:
 
     void setName(const QString &sValue);
     void setNative(bool bValue, const QString &sApplicationDataPath = "");
+    bool isNative() const;
     void addGroup(GROUPID groupId);
     void addId(quint64 nId);
     QList<RECORD> getRecords();
