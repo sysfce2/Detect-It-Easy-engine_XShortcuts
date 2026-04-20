@@ -759,7 +759,7 @@ QString XShortcuts::baseIdToString(BASEID baseId)
     else if (baseId == BASEID_MEMORYMAP) sResult = tr("Memory map");
     else if (baseId == BASEID_ATTACH) sResult = tr("Attach");
     else if (baseId == BASEID_DETACH) sResult = tr("Detach");
-    else if (baseId == BASEID_CPU) sResult = tr("CPU");
+    else if (baseId == BASEID_CPU) sResult = QString("CPU");
     else if (baseId == BASEID_LOG) sResult = tr("Log");
     else if (baseId == BASEID_BREAKPOINTS) sResult = tr("Breakpoints");
     else if (baseId == BASEID_CALLSTACK) sResult = tr("Callstack");
