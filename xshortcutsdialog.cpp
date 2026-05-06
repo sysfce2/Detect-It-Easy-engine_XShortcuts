@@ -28,6 +28,7 @@ XShortcutsDialog::XShortcutsDialog(QWidget *pParent, bool bMaxMinHint) : QDialog
         _winFlags |= Qt::WindowMinMaxButtonsHint;
     }
     setWindowFlags(_winFlags);
+    installEventFilter(this);
 }
 
 XShortcutsDialog::~XShortcutsDialog()
@@ -40,7 +41,7 @@ bool XShortcutsDialog::eventFilter(QObject *pObj, QEvent *pEvent)
 
     if (pEvent->type() == QEvent::FocusIn) {
         setActive(true);
-        registerShortcuts(true);
+        reloadShortcuts();
     } else if (pEvent->type() == QEvent::FocusOut) {
         setActive(false);
         registerShortcuts(false);

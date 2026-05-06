@@ -30,15 +30,15 @@ public:
     explicit XShortcutsObject();
 
     virtual void setGlobal(XShortcuts *pShortcuts, XOptions *pXOptions);
-    XShortcuts *getShortcuts();
-    XOptions *getGlobalOptions();
-    bool isActive();
+    XShortcuts *getShortcuts() const;
+    XOptions *getGlobalOptions() const;
+    bool isActive() const;
     void setActive(bool bState);
-    virtual void adjustView() = 0;
+    virtual void adjustView();
     virtual void reloadShortcuts();
     virtual void registerShortcuts(bool bState);
     virtual void setReadonly(bool bState);
-    virtual bool isReadonly();
+    virtual bool isReadonly() const;
     void addShortcut(quint64 nShortcutId, QWidget *pWidget, const char *pMethod);
     virtual void reloadData(bool bSaveSelection);
     virtual void setLocation(quint64 nLocation, qint32 nLocationType, qint64 nSize);

@@ -40,17 +40,17 @@ void XShortcutsObject::setGlobal(XShortcuts *pShortcuts, XOptions *pXOptions)
     adjustView();
 }
 
-XShortcuts *XShortcutsObject::getShortcuts()
+XShortcuts *XShortcutsObject::getShortcuts() const
 {
     return m_pShortcuts;
 }
 
-XOptions *XShortcutsObject::getGlobalOptions()
+XOptions *XShortcutsObject::getGlobalOptions() const
 {
     return m_pXOptions;
 }
 
-bool XShortcutsObject::isActive()
+bool XShortcutsObject::isActive() const
 {
     return m_bIsActive;
 }
@@ -58,6 +58,10 @@ bool XShortcutsObject::isActive()
 void XShortcutsObject::setActive(bool bState)
 {
     m_bIsActive = bState;
+}
+
+void XShortcutsObject::adjustView()
+{
 }
 
 void XShortcutsObject::reloadShortcuts()
@@ -76,7 +80,7 @@ void XShortcutsObject::setReadonly(bool bState)
     m_bIsReadonly = bState;
 }
 
-bool XShortcutsObject::isReadonly()
+bool XShortcutsObject::isReadonly() const
 {
     return m_bIsReadonly;
 }
@@ -94,9 +98,6 @@ void XShortcutsObject::addShortcut(quint64 nShortcutId, QWidget *pRecv, const ch
 void XShortcutsObject::reloadData(bool bSaveSelection)
 {
     Q_UNUSED(bSaveSelection)
-#ifdef QT_DEBUG
-    qDebug("reloadData");
-#endif
 }
 
 void XShortcutsObject::setLocation(quint64 nLocation, qint32 nLocationType, qint64 nSize)
@@ -104,7 +105,4 @@ void XShortcutsObject::setLocation(quint64 nLocation, qint32 nLocationType, qint
     Q_UNUSED(nLocation)
     Q_UNUSED(nLocationType)
     Q_UNUSED(nSize)
-#ifdef QT_DEBUG
-    qDebug("setLocation");
-#endif
 }
