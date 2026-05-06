@@ -593,7 +593,6 @@ public:
     };
 
     explicit XShortcuts(QObject *pParent = nullptr);
-    ~XShortcuts();
 
     void setName(const QString &sValue);
     void setNative(bool bValue, const QString &sApplicationDataPath = "");

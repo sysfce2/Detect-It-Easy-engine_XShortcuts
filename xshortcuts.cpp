@@ -25,13 +25,9 @@ XShortcuts::XShortcuts(QObject *pParent) : QObject(pParent)
     m_bIsNative = false;
 }
 
-XShortcuts::~XShortcuts()
-{
-}
-
 void XShortcuts::setName(const QString &sValue)
 {
-    this->m_sName = sValue;
+    m_sName = sValue;
 
 #ifdef Q_OS_WIN
     m_sName += ".win.ini";
@@ -835,11 +831,7 @@ quint64 XShortcuts::createShortcutsId(GROUPID groupId, const QList<GROUPID> &lis
 
 XShortcuts::GROUPID XShortcuts::getGroupId(quint64 nShortcutId)
 {
-    GROUPID result = GROUPID_NONE;
-
-    result = (GROUPID)(nShortcutId >> (56));
-
-    return result;
+    return (GROUPID)(nShortcutId >> 56);
 }
 
 QList<XShortcuts::GROUPID> XShortcuts::getSubgroupIds(quint64 nShortcutId)
@@ -909,11 +901,7 @@ XShortcuts::GROUPID XShortcuts::getParentGroupId(quint64 nId)
 
 XShortcuts::BASEID XShortcuts::getBaseId(quint64 nShortcutId)
 {
-    BASEID result = BASEID_UNKNOWN;
-
-    result = (BASEID)(nShortcutId & 0xFF);
-
-    return result;
+    return (BASEID)(nShortcutId & 0xFF);
 }
 
 QString XShortcuts::baseIdToSettingsString(BASEID baseId)
@@ -1132,8 +1120,8 @@ void XShortcuts::adjustAction(QMenu *pParentMenu, QAction *pAction, quint64 nId,
 
     QString sTitle = baseIdToString(getBaseId(nId));
 
-    if (sText != "") {
-        if (sTitle != "") {
+    if (!sText.isEmpty()) {
+        if (!sTitle.isEmpty()) {
             sTitle += " ";
         }
         sTitle += sText;
@@ -1458,7 +1446,7 @@ void XShortcuts::adjustContextMenu(QMenu *pMenu, const QList<MENUITEM> *plistMen
                     XOptions::adjustAction(pCurrentMenu, pAction, record.sText, record.pRecv, record.pMethod, record.iconType);
                 }
 
-                if (record.sPropertyName != "") {
+                if (!record.sPropertyName.isEmpty()) {
                     pAction->setProperty(record.sPropertyName.toLatin1().data(), record.varProperty);
                 }
 
