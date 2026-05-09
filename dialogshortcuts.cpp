@@ -72,8 +72,8 @@ void DialogShortcuts::reload()
         QString sName;
         sName += QString("%1 -> ").arg(XShortcuts::groupIdToString(groupId));
 
-        for (qint32 j = 0; j < listSubgroups.count(); j++) {
-            sName += QString("%1 -> ").arg(XShortcuts::groupIdToString(listSubgroups.at(j)));
+        for (XShortcuts::GROUPID subgroupId : listSubgroups) {
+            sName += QString("%1 -> ").arg(XShortcuts::groupIdToString(subgroupId));
         }
 
         sName += XShortcuts::baseIdToString(baseId);
@@ -94,8 +94,6 @@ void DialogShortcuts::reload()
     ui->tableViewShortcuts->setColumnWidth(COLUMN_NAME, 350);      // TODO consts
     ui->tableViewShortcuts->setColumnWidth(COLUMN_SHORTCUT, 200);  // TODO consts
 
-    // ui->tableViewShortcuts->sortByColumn(COLUMN_NAME, Qt::AscendingOrder);
-
     connect(ui->tableViewShortcuts->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), SLOT(onCellChanged(QItemSelection, QItemSelection)));
 }
 
@@ -106,7 +104,6 @@ bool DialogShortcuts::eventFilter(QObject *pObj, QEvent *pEvent)
             QKeyEvent *pKeyEvent = static_cast<QKeyEvent *>(pEvent);
             Qt::Key key = static_cast<Qt::Key>(pKeyEvent->key());
 
-            // Only modifiers without keys
             if ((key == Qt::Key_Control) || (key == Qt::Key_Shift) || (key == Qt::Key_Alt) || (key == Qt::Key_Meta)) {
                 return false;
             }
@@ -178,7 +175,7 @@ void DialogShortcuts::onCellChanged(const QItemSelection &itemSelected, const QI
 
 void DialogShortcuts::on_pushButtonClose_clicked()
 {
-    this->close();
+    close();
 }
 
 void DialogShortcuts::on_pushButtonClear_clicked()
@@ -202,14 +199,10 @@ void DialogShortcuts::on_pushButtonClear_clicked()
 
 void DialogShortcuts::on_pushButtonDefault_clicked()
 {
-    QList<XShortcuts::RECORD> listShortcuts = m_pShortcuts->getRecords();
+    const QList<XShortcuts::RECORD> listShortcuts = m_pShortcuts->getRecords();
 
-    qint32 nNumberOfRecords = listShortcuts.count();
-
-    for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        quint64 nId = listShortcuts.at(i).nId;
-
-        m_pShortcuts->setShortcut(nId, m_pShortcuts->getDefault(nId));
+    for (const XShortcuts::RECORD &record : listShortcuts) {
+        m_pShortcuts->setShortcut(record.nId, m_pShortcuts->getDefault(record.nId));
     }
 
     reload();
