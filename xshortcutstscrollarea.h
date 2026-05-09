@@ -36,7 +36,6 @@ public:
     };
 
     XShortcutstScrollArea(QWidget *pParent = nullptr);
-    ~XShortcutstScrollArea();
 
     static void setGlobalChildren(QWidget *pWidget, XShortcuts *pShortcuts, XOptions *pXOptions);
     static void adjustViewChildren(QWidget *pWidget);

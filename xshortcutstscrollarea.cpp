@@ -29,42 +29,17 @@ XShortcutstScrollArea::XShortcutstScrollArea(QWidget *pParent) : QScrollArea(pPa
     installEventFilter(this);
 }
 
-XShortcutstScrollArea::~XShortcutstScrollArea()
-{
-#ifdef QT_DEBUG
-    // if (g_pXOptions == &g_xOptionsEmpty) {
-    //     qDebug("NO OPTIONS: %s", this->objectName().toLatin1().data());
-    // }
-#endif
-}
-
 void XShortcutstScrollArea::setGlobalChildren(QWidget *pWidget, XShortcuts *pShortcuts, XOptions *pXOptions)
 {
-    QList<XShortcutstScrollArea *> listAreas = pWidget->findChildren<XShortcutstScrollArea *>();
-
-    qint32 nNumberOfAreas = listAreas.count();
-
-    for (qint32 i = 0; i < nNumberOfAreas; i++) {
-        XShortcutstScrollArea *pChild = dynamic_cast<XShortcutstScrollArea *>(listAreas.at(i));
-
-        if (pChild) {
-            pChild->setGlobal(pShortcuts, pXOptions);
-        }
+    for (XShortcutstScrollArea *pChild : pWidget->findChildren<XShortcutstScrollArea *>()) {
+        pChild->setGlobal(pShortcuts, pXOptions);
     }
 }
 
 void XShortcutstScrollArea::adjustViewChildren(QWidget *pWidget)
 {
-    QList<XShortcutstScrollArea *> listAreas = pWidget->findChildren<XShortcutstScrollArea *>();
-
-    qint32 nNumberOfAreas = listAreas.count();
-
-    for (qint32 i = 0; i < nNumberOfAreas; i++) {
-        XShortcutstScrollArea *pChild = dynamic_cast<XShortcutstScrollArea *>(listAreas.at(i));
-
-        if (pChild) {
-            pChild->adjustView();
-        }
+    for (XShortcutstScrollArea *pChild : pWidget->findChildren<XShortcutstScrollArea *>()) {
+        pChild->adjustView();
     }
 }
 
