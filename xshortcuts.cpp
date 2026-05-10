@@ -297,7 +297,7 @@ QSettings *XShortcuts::_openSettings() const
 
 qint32 XShortcuts::_findRecordIndex(quint64 nId) const
 {
-    const qint32 nCount = m_listRecords.count();
+    const qint32 nCount = m_listRecords.size();
     for (qint32 i = 0; i < nCount; i++) {
         if (m_listRecords.at(i).nId == nId) {
             return i;
@@ -317,7 +317,7 @@ void XShortcuts::load()
 #endif
 
     if (pSettings) {
-        qint32 nNumberOfRecords = m_listRecords.count();
+        qint32 nNumberOfRecords = m_listRecords.size();
 
         for (qint32 i = 0; i < nNumberOfRecords; i++) {
             quint64 nId = m_listRecords.at(i).nId;
@@ -343,7 +343,7 @@ void XShortcuts::save()
 #endif
 
     if (pSettings) {
-        qint32 nNumberOfRecords = m_listRecords.count();
+        qint32 nNumberOfRecords = m_listRecords.size();
 
         for (qint32 i = 0; i < nNumberOfRecords; i++) {
             quint64 nId = m_listRecords.at(i).nId;
@@ -398,7 +398,7 @@ bool XShortcuts::checkShortcut(quint64 nId, QKeySequence keySequence)
     if (keySequence != QKeySequence()) {
         GROUPID idGroup = getGroupId(nId);
 
-        qint32 nNumberOfRecords = m_listRecords.count();
+        qint32 nNumberOfRecords = m_listRecords.size();
 
         for (qint32 i = 0; i < nNumberOfRecords; i++) {
             quint64 _nId = m_listRecords.at(i).nId;
@@ -428,7 +428,7 @@ QString XShortcuts::idToSettingsString(quint64 nId)
 
     sResult += QString("XShortcuts/%1/").arg(groupIdToSettingsString(groupId));
 
-    qint32 nNumberOfRecords = listSubgroupIds.count();
+    qint32 nNumberOfRecords = listSubgroupIds.size();
 
     for (qint32 i = 0; i < nNumberOfRecords; i++) {
         sResult += QString("%1/").arg(groupIdToSettingsString(listSubgroupIds.at(i)));
@@ -814,7 +814,7 @@ quint64 XShortcuts::createShortcutsId(GROUPID groupId, const QList<GROUPID> &lis
 {
     quint64 nResult = 0;
     quint64 nSubgroups = 0;
-    qint32 nNumberOfRecords = listSubgroup.count();
+    qint32 nNumberOfRecords = listSubgroup.size();
 
     for (qint32 i = 0; i < nNumberOfRecords; i++) {
         nSubgroups |= (((quint64)1) << (listSubgroup.at(i)));
@@ -859,7 +859,7 @@ quint64 XShortcuts::getParentId(quint64 nId)
     QList<GROUPID> listSubgroups = getSubgroupIds(nId);
     GROUPID groupId = getGroupId(nId);
 
-    qint32 nNumberOfRecords = listSubgroups.count();
+    qint32 nNumberOfRecords = listSubgroups.size();
 
     if (baseId != BASEID_UNKNOWN) {
         nResult = nId & 0xFFFFFFFFFFFFFF00;
@@ -880,7 +880,7 @@ XShortcuts::GROUPID XShortcuts::getParentGroupId(quint64 nId)
     QList<GROUPID> listSubgroups = getSubgroupIds(nId);
     GROUPID groupId = getGroupId(nId);
 
-    qint32 nNumberOfRecords = listSubgroups.count();
+    qint32 nNumberOfRecords = listSubgroups.size();
 
     if (baseId != BASEID_UNKNOWN) {
         if (nNumberOfRecords) {
@@ -1065,7 +1065,7 @@ void XShortcuts::adjustRowCopyMenu(QMenu *pParentMenu, QMenu *pMenu, QAbstractIt
 
         QModelIndexList listSelected = pTableView->selectionModel()->selectedIndexes();
 
-        qint32 nNumberOfSelected = listSelected.count();
+        qint32 nNumberOfSelected = listSelected.size();
 
         for (qint32 i = 0; i < nNumberOfSelected; i++) {
             QModelIndex index = pTableView->selectionModel()->selectedIndexes().at(i);
@@ -1397,7 +1397,7 @@ void XShortcuts::adjustContextMenu(QMenu *pMenu, const QList<MENUITEM> *plistMen
 
                 QModelIndexList listSelected = record.pTableView->selectionModel()->selectedIndexes();
 
-                qint32 nNumberOfSelected = listSelected.count();
+                qint32 nNumberOfSelected = listSelected.size();
 
                 for (qint32 i = 0; i < nNumberOfSelected; i++) {
                     QModelIndex index = record.pTableView->selectionModel()->selectedIndexes().at(i);

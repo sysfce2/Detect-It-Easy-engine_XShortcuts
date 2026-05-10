@@ -30,8 +30,10 @@ public:
     explicit XShortcutsObject();
 
     virtual void setGlobal(XShortcuts *pShortcuts, XOptions *pXOptions);
-    XShortcuts *getShortcuts() const;
-    XOptions *getGlobalOptions() const;
+    XShortcuts *getShortcuts();
+    const XShortcuts *getShortcuts() const;
+    XOptions *getGlobalOptions();
+    const XOptions *getGlobalOptions() const;
     bool isActive() const;
     void setActive(bool bState);
     virtual void adjustView();

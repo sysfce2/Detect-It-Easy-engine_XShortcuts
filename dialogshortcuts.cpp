@@ -135,7 +135,7 @@ bool DialogShortcuts::eventFilter(QObject *pObj, QEvent *pEvent)
                         ui->lineEditShortcut->setText(sText);
                     } else {
                         QString sGroup = XShortcuts::groupIdToString(XShortcuts::getGroupId(nId));
-                        QString sErrorMessage = QString("%1: %2").arg(tr("Cannot set shortcut"), sText);
+                        QString sErrorMessage = QString("%1: %2").arg(tr("Cannot set shortcut")).arg(sText);
 
                         QMessageBox::critical(XOptions::getMainWidget(this), sGroup, sErrorMessage);
                     }

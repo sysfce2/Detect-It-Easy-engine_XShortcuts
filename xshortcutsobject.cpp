@@ -40,12 +40,22 @@ void XShortcutsObject::setGlobal(XShortcuts *pShortcuts, XOptions *pXOptions)
     adjustView();
 }
 
-XShortcuts *XShortcutsObject::getShortcuts() const
+XShortcuts *XShortcutsObject::getShortcuts()
 {
     return m_pShortcuts;
 }
 
-XOptions *XShortcutsObject::getGlobalOptions() const
+const XShortcuts *XShortcutsObject::getShortcuts() const
+{
+    return m_pShortcuts;
+}
+
+XOptions *XShortcutsObject::getGlobalOptions()
+{
+    return m_pXOptions;
+}
+
+const XOptions *XShortcutsObject::getGlobalOptions() const
 {
     return m_pXOptions;
 }

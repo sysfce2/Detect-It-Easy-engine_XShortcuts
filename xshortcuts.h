@@ -422,7 +422,7 @@ class XShortcuts : public QObject {
     Q_OBJECT
 
 public:
-    enum GROUPID {
+    enum GROUPID : qint32 {
         GROUPID_NONE = 0,
         GROUPID_SCAN,
         GROUPID_EDITOR,
@@ -472,7 +472,7 @@ public:
         GROUPID_BASE
     };
 
-    enum BASEID {
+    enum BASEID : qint32 {
         BASEID_UNKNOWN = 0,
         BASEID_COPY,
         BASEID_SHOW,
@@ -566,7 +566,7 @@ public:
 
     // TODO remove !!!
     // TODO Check projects
-    enum ID {
+    enum ID : qint32 {
         ID_UNKNOWN = 0,
         ID_ACTION = GROUPID_ACTION << GROUP_SH,
         ID_ACTION__END,

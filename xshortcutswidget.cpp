@@ -32,11 +32,11 @@ XShortcutsWidget::~XShortcutsWidget()
 void XShortcutsWidget::saveTableModel(QAbstractItemModel *pModel, const QString &sFileName)
 {
     if (pModel) {
-        QString _sFileName = QFileDialog::getSaveFileName(this, tr("Save"), sFileName, QString("%1 (*.txt);;%2 (*)").arg(tr("Text files"), tr("All files")));
+        QString _sFileName = QFileDialog::getSaveFileName(this, tr("Save"), sFileName, QString("%1 (*.txt);;%2 (*)").arg(tr("Text files")).arg(tr("All files")));
 
         if (!_sFileName.isEmpty()) {
             if (!XOptions::saveTableModel(pModel, _sFileName)) {
-                QMessageBox::critical(XOptions::getMainWidget(this), tr("Error"), QString("%1: %2").arg(tr("Cannot save file"), _sFileName));
+                QMessageBox::critical(XOptions::getMainWidget(this), tr("Error"), QString("%1: %2").arg(tr("Cannot save file")).arg(_sFileName));
             }
         }
     }
@@ -44,22 +44,22 @@ void XShortcutsWidget::saveTableModel(QAbstractItemModel *pModel, const QString 
 
 void XShortcutsWidget::saveTreeModel(QAbstractItemModel *pModel, const QString &sFileName)
 {
-    QString _sFileName = QFileDialog::getSaveFileName(this, tr("Save"), sFileName, QString("%1 (*.txt);;%2 (*)").arg(tr("Text files"), tr("All files")));
+    QString _sFileName = QFileDialog::getSaveFileName(this, tr("Save"), sFileName, QString("%1 (*.txt);;%2 (*)").arg(tr("Text files")).arg(tr("All files")));
 
     if (!_sFileName.isEmpty()) {
         if (!XOptions::saveTreeModel(pModel, _sFileName)) {
-            QMessageBox::critical(XOptions::getMainWidget(this), tr("Error"), QString("%1: %2").arg(tr("Cannot save file"), _sFileName));
+            QMessageBox::critical(XOptions::getMainWidget(this), tr("Error"), QString("%1: %2").arg(tr("Cannot save file")).arg(_sFileName));
         }
     }
 }
 
 void XShortcutsWidget::saveTextEdit(QTextEdit *pTextEdit, const QString &sFileName)
 {
-    QString _sFileName = QFileDialog::getSaveFileName(this, tr("Save"), sFileName, QString("%1 (*.txt);;%2 (*)").arg(tr("Text files"), tr("All files")));
+    QString _sFileName = QFileDialog::getSaveFileName(this, tr("Save"), sFileName, QString("%1 (*.txt);;%2 (*)").arg(tr("Text files")).arg(tr("All files")));
 
     if (!_sFileName.isEmpty()) {
         if (!XOptions::saveTextEdit(pTextEdit, _sFileName)) {
-            QMessageBox::critical(XOptions::getMainWidget(this), tr("Error"), QString("%1: %2").arg(tr("Cannot save file"), _sFileName));
+            QMessageBox::critical(XOptions::getMainWidget(this), tr("Error"), QString("%1: %2").arg(tr("Cannot save file")).arg(_sFileName));
         }
     }
 }
