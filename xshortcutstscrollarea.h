@@ -32,6 +32,7 @@ public:
         TCLOLOR_SELECTED = 0,
         TCLOLOR_BREAKPOINT,
         TCLOLOR_ANALYSED,
+        TCLOLOR_CURRENTIP,
         TCLOLOR_SIZE
     };
 
