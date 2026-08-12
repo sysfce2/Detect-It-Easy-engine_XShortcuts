@@ -44,6 +44,10 @@ void XShortcutsWidget::saveTableModel(QAbstractItemModel *pModel, const QString 
 
 void XShortcutsWidget::saveTreeModel(QAbstractItemModel *pModel, const QString &sFileName)
 {
+    if (!pModel) {
+        return;
+    }
+
     QString _sFileName = QFileDialog::getSaveFileName(this, tr("Save"), sFileName, QString("%1 (*.txt);;%2 (*)").arg(tr("Text files")).arg(tr("All files")));
 
     if (!_sFileName.isEmpty()) {

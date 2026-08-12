@@ -31,11 +31,17 @@ DialogShortcuts::DialogShortcuts(QWidget *pParent) : XShortcutsDialog(pParent, t
     m_pFilter = new QSortFilterProxyModel(this);
 
     ui->lineEditShortcut->setEnabled(false);
+    ui->pushButtonClear->setEnabled(false);
+    ui->pushButtonDefault->setEnabled(false);
     ui->lineEditShortcut->installEventFilter(this);
 }
 
 DialogShortcuts::~DialogShortcuts()
 {
+    m_pFilter->setSourceModel(nullptr);
+    ui->tableViewShortcuts->setModel(nullptr);
+    delete m_pModel;
+
     delete ui;
 }
 
@@ -52,12 +58,24 @@ void DialogShortcuts::setData(XShortcuts *pShortcuts)
 
 void DialogShortcuts::reload()
 {
-    // TODO remove old Model
+    m_pFilter->setSourceModel(nullptr);
+    ui->tableViewShortcuts->setModel(nullptr);
+    delete m_pModel;
+    m_pModel = nullptr;
+    ui->lineEditShortcut->clear();
+    ui->lineEditShortcut->setEnabled(false);
+    ui->pushButtonClear->setEnabled(false);
+    ui->pushButtonDefault->setEnabled(m_pShortcuts != nullptr);
+
+    if (!m_pShortcuts) {
+        return;
+    }
+
     QList<XShortcuts::RECORD> listShortcuts = m_pShortcuts->getRecords();
 
     qint32 nNumberOfRecords = listShortcuts.count();
 
-    m_pModel = new QStandardItemModel(nNumberOfRecords, 2);
+    m_pModel = new QStandardItemModel(nNumberOfRecords, 2, this);
 
     m_pModel->setHeaderData(COLUMN_NAME, Qt::Horizontal, tr("Name"));
     m_pModel->setHeaderData(COLUMN_SHORTCUT, Qt::Horizontal, tr("Shortcut"));
@@ -94,7 +112,8 @@ void DialogShortcuts::reload()
     ui->tableViewShortcuts->setColumnWidth(COLUMN_NAME, 350);      // TODO consts
     ui->tableViewShortcuts->setColumnWidth(COLUMN_SHORTCUT, 200);  // TODO consts
 
-    connect(ui->tableViewShortcuts->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), SLOT(onCellChanged(QItemSelection, QItemSelection)));
+    connect(ui->tableViewShortcuts->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), SLOT(onCellChanged(QItemSelection, QItemSelection)),
+            Qt::UniqueConnection);
 }
 
 bool DialogShortcuts::eventFilter(QObject *pObj, QEvent *pEvent)
@@ -121,10 +140,10 @@ bool DialogShortcuts::eventFilter(QObject *pObj, QEvent *pEvent)
 
             QString sText = keyValue.toString(QKeySequence::NativeText);
 
-            if (m_pModel) {
+            if (m_pModel && m_pShortcuts) {
                 qint32 nRow = ui->tableViewShortcuts->currentIndex().row();
 
-                if (nRow < m_pModel->rowCount()) {
+                if ((nRow >= 0) && (nRow < ui->tableViewShortcuts->model()->rowCount())) {
                     QModelIndex index = ui->tableViewShortcuts->model()->index(nRow, COLUMN_SHORTCUT);
 
                     quint64 nId = ui->tableViewShortcuts->model()->data(index, Qt::UserRole + 1).toULongLong();
@@ -169,7 +188,12 @@ void DialogShortcuts::onCellChanged(const QItemSelection &itemSelected, const QI
     if (listSelected.count() >= 2) {
         QString sShortcut = listSelected.at(COLUMN_SHORTCUT).data().toString();
         ui->lineEditShortcut->setEnabled(true);
+        ui->pushButtonClear->setEnabled(true);
         ui->lineEditShortcut->setText(sShortcut);
+    } else {
+        ui->lineEditShortcut->clear();
+        ui->lineEditShortcut->setEnabled(false);
+        ui->pushButtonClear->setEnabled(false);
     }
 }
 
@@ -182,10 +206,10 @@ void DialogShortcuts::on_pushButtonClear_clicked()
 {
     ui->lineEditShortcut->clear();
 
-    if (m_pModel) {
+    if (m_pModel && m_pShortcuts) {
         qint32 nRow = ui->tableViewShortcuts->currentIndex().row();
 
-        if (nRow < m_pModel->rowCount()) {
+        if ((nRow >= 0) && (nRow < ui->tableViewShortcuts->model()->rowCount())) {
             QModelIndex index = ui->tableViewShortcuts->model()->index(nRow, COLUMN_SHORTCUT);
 
             quint64 nId = ui->tableViewShortcuts->model()->data(index, Qt::UserRole + 1).toULongLong();
@@ -199,6 +223,10 @@ void DialogShortcuts::on_pushButtonClear_clicked()
 
 void DialogShortcuts::on_pushButtonDefault_clicked()
 {
+    if (!m_pShortcuts) {
+        return;
+    }
+
     const QList<XShortcuts::RECORD> listShortcuts = m_pShortcuts->getRecords();
 
     for (const XShortcuts::RECORD &record : listShortcuts) {
