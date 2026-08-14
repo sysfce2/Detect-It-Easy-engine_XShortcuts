@@ -1377,7 +1377,7 @@ void XShortcuts::adjustContextMenu(QMenu *pMenu, const QList<MENUITEM> *plistMen
                 pCurrentMenu = mapMenus.value(nCurrentGroup);
 
                 if (!pCurrentMenu) {
-                    pCurrentMenu = new QMenu(0);
+                    pCurrentMenu = new QMenu(pMenu);
                     mapMenus.insert(nCurrentGroup, pCurrentMenu);
                 }
 
