@@ -23,9 +23,9 @@
 XShortcutstScrollArea::XShortcutstScrollArea(QWidget *pParent) : QScrollArea(pParent)
 {
     m_color[TCLOLOR_SELECTED] = getColorSelected(viewport());
-    m_color[TCLOLOR_BREAKPOINT] = Qt::red;                 // mb TODO
-    m_color[TCLOLOR_ANALYSED] = QColor(100, 0, 0, 10);     // TODO
-    m_color[TCLOLOR_CURRENTIP] = QColor(0, 160, 0, 90);    // current instruction pointer line (translucent so text stays readable)
+    m_color[TCLOLOR_BREAKPOINT] = Qt::red;               // mb TODO
+    m_color[TCLOLOR_ANALYSED] = QColor(100, 0, 0, 10);   // TODO
+    m_color[TCLOLOR_CURRENTIP] = QColor(0, 160, 0, 90);  // current instruction pointer line (translucent so text stays readable)
 
     installEventFilter(this);
 }
